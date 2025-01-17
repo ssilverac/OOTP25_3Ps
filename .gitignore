@@ -1,2 +1,27 @@
+# Virtual Environment
 venv/
-/data
+.env/
+env/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Databases
+*.sqlite3
+*.db
+
+# IDE files
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
