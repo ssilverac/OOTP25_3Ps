@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Virtual Environment
 venv/
 .env/
@@ -25,3 +26,7 @@ __pycache__/
 # OS-specific files
 .DS_Store
 Thumbs.db
+=======
+venv/
+data/
+>>>>>>> 4dabe14d70c35aff09a0707b7187986604094ab8
