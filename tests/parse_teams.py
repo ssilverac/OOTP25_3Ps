@@ -67,6 +67,7 @@ df = pd.DataFrame(player_data, columns=headers)
 #create a master roster of each player and their corresponding id
 player_roster = df[['id', 'LastName', 'FirstName', 'TeamName', 'team_id']]
 player_roster.set_index('id')
+print(player_roster)
 player_roster.to_csv(os.path.join(SAVE_PATH, 'master_roster.csv'))
 
 
@@ -74,5 +75,3 @@ player_roster.to_csv(os.path.join(SAVE_PATH, 'master_roster.csv'))
 team_dict = dict(item.split(':') for item in team_data[:-2])
 team_dict = pd.DataFrame([team_dict])
 team_dict.to_csv(os.path.join(SAVE_PATH, 'teamid_master.csv'), index=False)
-
-print(team_dict['6'])
