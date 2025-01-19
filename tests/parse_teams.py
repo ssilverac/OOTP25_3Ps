@@ -1,3 +1,15 @@
+'''
+This function was created to clean the raw textfiles acquired directly from OOTP25 and parsed to created
+useful pandas dataframes for processing later on.
+One file was used titled abl_roster.txt and from this file 3 dataframes where created.
+One titled team_data which was used to create the master_roster.csv and the other one created the teamid_master.csv.
+The master roster contains the names, ID, team and team ID for each player in the league. the teamid_master.csv contains
+the list of each team and their corresponding ID.
+
+These files can then be used to cross-reference performance statistics to match an id to a specific player,
+as those files do not contain team names or player names.
+'''
+
 import pandas as pd
 import os
 import re
