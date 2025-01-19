@@ -74,7 +74,7 @@ class FileParser:
         player_df = pd.DataFrame(cleaned_player_data, columns=headers)
 
         #create master roster for each player and corresponding id
-        player_roster = player_df[['id', 'LastName', 'FirstName', 'TeamName', 'team_id']].set_index('id')
+        player_roster = player_df[['id', 'LastName', 'FirstName', 'TeamName', 'team_id']]
 
         #convert list to dict and drop last 2 entries
         team_dict = dict(item.split(':') for item in team_data[:-2])
@@ -107,5 +107,3 @@ parser.save_df(team_dict, output_master_teamID_path)
 
 player_statistics_path = os.path.join(SAVE_PATH, 'player_stats.csv')
 parser.save_df(player_stats, player_statistics_path)
-
-print(player_roster.head(50))
