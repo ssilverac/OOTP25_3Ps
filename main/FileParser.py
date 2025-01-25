@@ -18,8 +18,52 @@ class FileParser:
     Methods:
     --------
     preProcessFile(sep_char: str):
-        Parse the raw file and cleans its contents, making it easier to process
-        further. Removes leading and trailing whitespace, 
+        Opens and parse the raw file and cleans its contents, making it easier to process
+        further. Removes leading and trailing whitespace.
+        Takes argument sep_char, which is the character will be used
+        to split the file contents.
+
+    extractSections(strip_char: str
+                    start_condition: lambda function
+                    end_condition: lambda function
+                    clean_headers=False
+                    team_id=False
+                    clean_stats=False)
+        Parses and extract the sections of the provided file of interest.
+        Currently this function is set up to handle the 3 most relevant sections;
+        Headers, team names and corresponding ID, and player statistics.
+        strip_chars should be a string, which is a character that will be stripped from
+        the file, such as unwanted characters, extra commas or parenthesis etc.
+        start_conditon and end_condition should be provided as a lambda function. This 
+        will be used to check whether the content of interest is being copied.
+        clean_headers defaults to False. This should be changed to True if the goal is
+        to extract the header names from the file. Same thing with team_id and clean_stats.
+        Note only one of these 3 options should be set to True at a time.
+
+        Returns parsed_list
+
+    _cleanHeaders(parsed_list: list)
+        Internal function automatically called when clean_headers=True in extractSections
+        Returns a cleaned list of headers
+
+    _cleanTeamIds(parsed_list: list)
+        Internal function automatically called when team_id=True. in extractSections
+        Returns dictionary, with keys as the team id and values as team name
+    
+    _cleanPlayerStats(parsed_list: list)
+        Internal function automatically called when clean_stats=True in extractSections.
+        Return cleaned nested list of player statistics.
+
+    createStatsDf(player_stats: list
+                  column_names: list)
+        Takes the list containing the player statistics and creates
+        a pandas DataFrame, using the list of headers as the column names.
+        Returns Pandas DataFrame
+    
+    saveDf(df: DataFrame
+           filename: str)
+        takes the dataframe and saves it as a csv file at the specified filepath/filename
+
     '''
     def __init__(self, raw_data):
         self.processed_content = None
@@ -28,14 +72,14 @@ class FileParser:
     raw_data: str;
         The raw data which you wish to load and parse.
         Can be the relative path to the file.
-    This class takes a
+        This class takes text file downloaded from Out of the Park Baseball 25. All these files are typically
+        in the same format.
     '''
 
     def preProcessFile(self, sep_char):
         '''
-        Parse the full file and clean up eol, whitespace, etc.
-
-
+        Parse the full file and clean up eol, and leading/trailing whitespace.
+        Uses sep_char to seperate the content into iterable objects
         '''
         with open(self.raw_data, 'r') as file:
 
@@ -44,11 +88,7 @@ class FileParser:
             logging.info('File successfully pre-Parsed')
 
     def extractSections(self, strip_chars, start_condition, end_condition, clean_headers=False, team_id=False, clean_stats=False):
-        '''
-        Parse the team names and IDs from the file
 
-        Returns dict {id:team names}
-        '''
         if self.processed_content is None:
             logging.info('ValueError: No Processed content passed to function')
             raise ValueError('File content must be preprocessed first')
@@ -104,7 +144,6 @@ class FileParser:
             cleaned_headers.extend([i.strip() for i in item.split(',')])
         
         logging.info('Headers cleaned successfully')
-        #cleaned_headers.pop()
         
         logging.info(cleaned_headers)
         return cleaned_headers
