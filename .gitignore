@@ -30,4 +30,6 @@ Thumbs.db
 venv/
 data/
 parse_teams.py
+*.log
+parsefile.py
 >>>>>>> 4dabe14d70c35aff09a0707b7187986604094ab8

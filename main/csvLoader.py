@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-import numpy as np
 
 class csvLoader:
     def __init__(self, filename):
@@ -14,4 +13,5 @@ class csvLoader:
 
 roster = csvLoader('../data/cleaned/2025/masterRoster.csv')
 
-roster.csv_to_df()
+master_roster = roster.csv_to_df()
+print(master_roster)
