@@ -260,10 +260,13 @@ if __name__ == '__main__':
     # Select relevant columns to save
     columns_of_interest =['player ID', 'lastname', 'firstname', 'year', 'team ID', 'g', 'gs',
        'pa', 'ab', 'h', '2b', '3b', 'hr', 'rbi', 'r', 'sb', 'cs', 'bb', 'hp',
-       'k', 'sh', 'sf', 'gdp', 'ibb', 'ci', 'pitches seen']
+       'k', 'sh', 'sf', 'gdp', 'ibb', 'ci', 'pitches seen', 'split_id']
 
     stats_df = stats_df[columns_of_interest]
     # Save to csv
-    data.saveDf(stats_df, os.path.join(save_path, 'playerStats.csv'))
- 
-    
+    data.saveDf(stats_df, os.path.join(save_path, 'playerBattingStats.csv'))
+
+    overall = stats_df.loc[stats_df['split_id'] == '1']
+    vsL = stats_df.loc[stats_df['split_id'] == '2']
+    vsR = stats_df.loc[stats_df['split_id'] == '3']
+    print(vsR)
