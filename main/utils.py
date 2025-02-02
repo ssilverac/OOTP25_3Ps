@@ -12,4 +12,7 @@ class csvLoader:
         
         return df
 
-    
+
+def create_df(data, column_names):
+    df = pd.DataFrame(data, columns=column_names)
+    return df
