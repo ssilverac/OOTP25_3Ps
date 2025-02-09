@@ -1,6 +1,5 @@
-import pandas as pd
 from fileLog import get_logger
-from utils import csvLoader
+
 
 league_logger = get_logger('LeagueLogger', 'league.log')
 
@@ -82,6 +81,34 @@ class Roster:
                 league_logger.info(f'Team {team_id} found!')
                 return [self.players[player_id] for player_id in self.team_roster[team_id]] if self.team_roster[team_id] else 'No Team Found'
 
+    def add_stats(self, df):
+        league_logger.info('Adding stats to player objects\n')
+
+        records = df.to_dict('records')
+        for row in records:
+            player_id = row.get('player ID')
+            if player_id in self.players:
+                player = self.players[player_id]
+                if 'gdp' in row:
+                    if not isinstance(player, Batter):
+                        new_player = Batter(player)
+                        new_player.add_stats(row)
+                        self.players[player_id] = new_player
+                        league_logger.info(f'Converted {player_id} into Batter object Successfully')
+                    else:
+                        league_logger.info(f'Player: {player_id} already Batter. Adding stats')
+                        player.add_stats(row)
+
+                elif 'ip' in row:
+                    if not isinstance(player, Pitcher):
+                        new_player = Pitcher(player)
+                        new_player.add_stats(row)
+                        self.players[player_id] = new_player
+                        league_logger.info(f'Converted {player_id} into Pitcher Object Successfully')
+                    else:
+                        league_logger.info(f'Player {player_id} Already a Pitcher. Adding stats')
+   
+
 class Player:
     def __init__(self, player_id, last_name, first_name, team_id, team, position):
         self.player_id = player_id
@@ -109,14 +136,13 @@ class Player:
  
     def get_info(self):
         league_logger.info(f'Retrieving {self.last_name}, {self.first_name}...\n')
-        print('\nRetrieving Player\n')
+        print(f'\nRetrieving Player: {self.last_name}, {self.first_name}\n')
         return {'ID': self.player_id,
                 'Last Name': self.last_name,
                 'First Name': self.first_name,
                 'Team ID': self.team_id,
                 'Team Name': self.team,
-                'Position': self.position,  
-                'Stats': self.stats}
+                'Position': self.position}
 
 class Batter(Player):
     def __init__(self, player):
@@ -125,37 +151,90 @@ class Batter(Player):
                          player.team, player.position)
         self.stats = {}
 
-    def add_stats(self, df):
+    def add_stats(self, row):
         league_logger.info('Adding Stats to Existing Player object...')
 
-        records = df.to_dict('records')
 
-        for row in records:
-            self.stats = {
-                'G': row.get('g', 0),
-                'GS': row.get('gs', 0),
-                'PA': row.get('pa', 0),
-                'AB': row.get('ab', 0),
-                'H': row.get('h', 0),
-                '2B': row.get('2b', 0),
-                '3B': row.get('3b', 0),
-                'HR': row.get('hr', 0),
-                'RBI': row.get('rbi', 0),
-                'R': row.get('r', 0),
-                'SB': row.get('sb', 0),
-                'CS': row.get('cs', 0),
-                'BB': row.get('bb', 0),
-                'HBP': row.get('hbp', 0),
-                'K': row.get('k'),
-                'Sac Hits': row.get('sh', 0),
-                'Sac Flys': row.get('sf', 0),
-                'GIDP': row.get('gdp', 0),
-                'IBB': row.get('ibb', 0),
-                'Catch Int': row.get('ci', 0),
-                'Pitches Seen': row.get('pitches seen', 0)
-            }
-
+        self.stats = {
+            'Games': row.get('g', 0),
+            'Games Started': row.get('gs', 0),
+            'Plate App': row.get('pa', 0),
+            'At Bats': row.get('ab', 0),
+            'Hits': row.get('h', 0),
+            'Doubles': row.get('2b', 0),
+            'Triples': row.get('3b', 0),
+            'Home Runs': row.get('hr', 0),
+            'RBI': row.get('rbi', 0),
+            'Runs': row.get('r', 0),
+            'Stolen Bases': row.get('sb', 0),
+            'Caught Stealing': row.get('cs', 0),
+            'Walks': row.get('bb', 0),
+            'HBP': row.get('hbp', 0),
+            'Strikeouts': row.get('k'),
+            'Sac Hits': row.get('sh', 0),
+            'Sac Flys': row.get('sf', 0),
+            'GIDP': row.get('gdp', 0),
+            'IBB': row.get('ibb', 0),
+            'Catch Int': row.get('ci', 0),
+            'Pitches Seen': row.get('pitches seen', 0)
+        }
     
+    def get_info(self):
+        info = super().get_info()
+        info['Stats'] = self.stats
+        return info
+
+class Pitcher(Player):
+    def __init__(self, player):
+        super().__init__(player.player_id, player.last_name,
+                         player.first_name, player.team_id,
+                         player.team, player.position)
+        self.stats = {}
+
+    def add_stats(self, row):
+        league_logger.info('Add Stats function initialized for PITCHER')
+       
+        self.stats = {
+            'Games': row.get('g', 0),
+            'Wins': row.get('w', 0),
+            'Losess': row.get('l', 0),
+            'Saves': row.get('s', 0),
+            'Innings Pitched': row.get('ip', 0),
+            'Hits Allowed': row.get('ha', 0),
+            'Runs': row.get('R', 0),
+            'Earned Runs': row.get('er', 0),
+            'Walks': row.get('bb', 0),
+            'Hit by Pitch': row.get('hp', 0),
+            'Strikeouts': row.get('k', 0),
+            'Batters Faced': row.get('bf', 0),
+            'At Bats': row.get('ab', 0),
+            'Singles': row.get('1b', 0),
+            'Doubles': row.get('2b', 0),
+            'Triples': row.get('3b', 0),
+            'Home Runs': row.get('hr', 0),
+            'Total Bases': row.get('tb', 0),
+            'Sac Hits': row.get('sh', 0),
+            'Sac Flies': row.get('sf', 0),
+            'Intent Walks': row.get('iw', 0),
+            'Balks': row.get('bk', 0),
+            'Wild Pitches': row.get('wp', 0),
+            'Double Plays': row.get('dp', 0),
+            'Quality Starts': row.get('qs', 0),
+            'Save Opps': row.get('saveopp', 0),
+            'Blown Saves': row.get('blownsv', 0),
+            'Holds': row.get('holds', 0),
+            'Stolen Bases': row.get('sb', 0),
+            'Caught Stealing': row.get('cs', 0),
+            'Ground Balls': row.get('gb', 0),
+            'Fly Balls': row.get('fb', 0),
+            'Pitches': row.get('pitches', 0)
+        }
+
+    def get_info(self):
+        info = super().get_info()
+        info['Stats'] = self.stats
+        return info
+
 if __name__ == '__main__':
     
     pass
