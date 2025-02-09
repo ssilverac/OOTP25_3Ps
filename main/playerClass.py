@@ -34,14 +34,13 @@ class Roster:
         logging.warning(f'Player {last_name if last_name else player_id} not found')
         return None
 
-
 class Player:
     def __init__(self, player_id, last_name, first_name, team_id, stats):
         self.player_id = player_id
         self.last_name = last_name
         self.first_name = first_name
         self.team_id = team_id
-        self.stats = stats
+        self.stats = stats     
         self.advanced_stats = self.calculate_advanced_stats()
         
     @classmethod
@@ -128,8 +127,6 @@ class Player:
             'BABIP': BABIP
         }
 
-
-
     def get_info(self):
         print('\nRetriving player info\n')
 
@@ -140,8 +137,6 @@ class Player:
                 'Stats': self.stats,
                 'Advanced Stats': self.advanced_stats
                 }
-
-
 
 if __name__ == '__main__':
     

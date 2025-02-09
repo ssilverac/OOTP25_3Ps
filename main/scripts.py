@@ -40,7 +40,15 @@ with open('../data/raw/abl_rosters.txt', 'r') as file:
     df = create_df(player_stats, headers_list)
     df.columns = df.columns.str.strip()
 
-    reduced_df = df[['id', 'Team Name', 'League Name', 'LastName', 'FirstName', 'Bats', 'Throws', 'Position']]
-    pd.set_option('display.max_rows', 1000)
-    logging.info(reduced_df.head(1000))
+    df = df[['id', 'team_id', 'Team Name', 'League Name', 'LastName', 'FirstName', 'Bats', 'Throws', 'Position']]
+    logging.info(df.head())
+    
+    df.rename(columns={'id':'Player ID', 'team_id': 'Team ID', 'LastName': 'Last Name', 'FirstName': 'First Name'}, inplace=True)
+    logging.info(df.head())
 
+    df.to_csv('../data/cleaned/master_roster.csv', index=False)
+    
+
+
+
+  
